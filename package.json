@@ -6,10 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:video": "node scripts/test-video-providers.js"
   },
   "dependencies": {
+    "hls.js": "^1.6.15",
     "next": "15.3.4",
+    "plyr-react": "^6.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-player": "^2.16.0",
@@ -18,6 +21,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/hls.js": "^0.13.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -1,35 +1,32 @@
 // app/lib/api.ts
 
-// Kita definisikan tipe data untuk anime agar TypeScript bisa bantu kita
 export type Anime = {
   mal_id: number;
   title: string;
+  title_english?: string;
   images: {
     webp: {
       image_url: string;
+      large_image_url: string;
     };
   };
   score: number;
+  year?: number;
+  episodes?: number;
 };
 
-// Fungsi untuk mengambil data anime terpopuler
 export const getTopAnime = async (): Promise<Anime[]> => {
   try {
     const response = await fetch("https://api.jikan.moe/v4/top/anime?limit=20");
 
     if (!response.ok) {
-      // Jika API gagal merespon dengan baik, kita lempar error
       throw new Error("Failed to fetch top anime from Jikan API");
     }
 
     const data = await response.json();
-
-    // API Jikan membungkus hasilnya dalam properti 'data'
     return data.data;
   } catch (error) {
-    // Menangkap error jaringan atau error dari 'throw' di atas
     console.error("Error fetching top anime:", error);
-    // Mengembalikan array kosong jika terjadi error agar aplikasi tidak crash
     return [];
   }
 };
@@ -38,11 +35,18 @@ export type AnimeDetail = Anime & {
   synopsis: string;
   genres: { mal_id: number; name: string }[];
   studios: { mal_id: number; name: string }[];
-  year: number;
-  episodes: number;
+  type: string;
+  status: string;
+  rating: string;
+  aired: {
+    string: string;
+  };
+  trailer?: {
+    youtube_id: string;
+    url: string;
+  };
 };
 
-// Fungsi untuk mengambil detail anime berdasarkan ID
 export const getAnimeById = async (id: string): Promise<AnimeDetail | null> => {
   try {
     const response = await fetch(`https://api.jikan.moe/v4/anime/${id}`);
@@ -53,14 +57,14 @@ export const getAnimeById = async (id: string): Promise<AnimeDetail | null> => {
     return data.data;
   } catch (error) {
     console.error(`Error fetching anime with id ${id}:`, error);
-    return null; // Kembalikan null jika terjadi error
+    return null;
   }
 };
 
 export const getSeasonNowAnime = async (): Promise<Anime[]> => {
   try {
     const response = await fetch(
-      "https://api.jikan.moe/v4/seasons/now?limit=20"
+      "https://api.jikan.moe/v4/seasons/now?limit=20",
     );
     if (!response.ok) {
       throw new Error("Failed to fetch season now anime");
@@ -72,3 +76,30 @@ export const getSeasonNowAnime = async (): Promise<Anime[]> => {
     return [];
   }
 };
+
+export const getEpisodeVideoUrl = async (
+  animeId: string,
+  episodeNumber: number,
+): Promise<string> => {
+  try {
+    const anime = await getAnimeById(animeId);
+
+    if (anime?.trailer?.youtube_id && episodeNumber === 1) {
+      return `https://www.youtube.com/watch?v=${anime.trailer.youtube_id}`;
+    }
+
+    return "https://www.youtube.com/watch?v=LXb3EKWsInQ";
+  } catch (error) {
+    console.error("Error getting video URL:", error);
+    return "https://www.youtube.com/watch?v=LXb3EKWsInQ";
+  }
+};
+
+export function createAnimeSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .trim();
+}

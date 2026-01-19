@@ -1,5 +1,5 @@
 // app/components/VideoPlayer.tsx
-"use client"; // INI WAJIB! Menandakan ini adalah Client Component
+"use client";
 
 import ReactPlayer from "react-player/lazy";
 
@@ -15,10 +15,9 @@ const VideoPlayer = ({ url }: VideoPlayerProps) => {
         width="100%"
         height="100%"
         controls={true}
-        // Opsi tambahan untuk pengalaman lebih baik
-        playing={true} // Opsional: auto play
-        light={false} // Opsional: jangan tampilkan thumbnail, langsung player
-        pip={true} // Picture-in-Picture
+        playing={true}
+        light={false}
+        pip={true}
       />
     </div>
   );
