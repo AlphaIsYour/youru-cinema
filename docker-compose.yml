@@ -1,0 +1,35 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        - NEXT_PUBLIC_CONSUMET_API=${NEXT_PUBLIC_CONSUMET_API:-http://localhost:3001}
+    container_name: youru-cinema-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+      - NEXT_PUBLIC_CONSUMET_API=${NEXT_PUBLIC_CONSUMET_API}
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - youru_cinema_network
+
+# Uncomment the below section if you want to deploy the Consumet API locally as well:
+#  api:
+#    image: ghcr.io/consumet/api:latest
+#    container_name: consumet-api
+#    restart: unless-stopped
+#    ports:
+#      - "3001:3000"
+#    networks:
+#      - youru_cinema_network
+
+networks:
+  youru_cinema_network:
+    driver: bridge

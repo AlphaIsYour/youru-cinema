@@ -12,6 +12,7 @@ const nextConfig = {
       },
     ],
   },
+  output: "standalone",
   // AKHIR BLOK TAMBAHAN
 };
 
