@@ -1,4 +1,4 @@
-// app/lib/favorites.ts
+import { showToast } from "@/app/components/ToastContainer";
 
 export type FavoriteAnime = {
   mal_id: number;
@@ -17,15 +17,20 @@ export const addToFavorites = (anime: FavoriteAnime): void => {
 
   favorites.unshift(anime);
   localStorage.setItem("favorites", JSON.stringify(favorites));
+  showToast(`"${anime.title}" added to My List!`, "info");
 };
 
 export const removeFromFavorites = (malId: number): void => {
   if (typeof window === "undefined") return;
 
   const favorites = getFavorites();
+  const removedItem = favorites.find((f) => f.mal_id === malId);
   const filtered = favorites.filter((f) => f.mal_id !== malId);
 
   localStorage.setItem("favorites", JSON.stringify(filtered));
+  if (removedItem) {
+    showToast(`"${removedItem.title}" removed from My List`, "info");
+  }
 };
 
 export const getFavorites = (): FavoriteAnime[] => {
@@ -55,3 +60,4 @@ export const toggleFavorite = (anime: FavoriteAnime): boolean => {
     return true;
   }
 };
+

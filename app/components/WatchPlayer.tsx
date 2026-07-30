@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+
 import StreamingPlayer from "./StreamingPlayer";
 import { saveWatchHistory } from "@/app/lib/watchHistory";
 
@@ -28,20 +29,10 @@ export default function WatchPlayer({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [startTime, setStartTime] = useState(0);
+  const [theaterMode, setTheaterMode] = useState(false);
 
-  useEffect(() => {
-    const savedProgress = localStorage.getItem(
-      `watch-progress-${animeSlug}-${episodeNumber}`,
-    );
-    if (savedProgress) {
-      const progress = JSON.parse(savedProgress);
-      setStartTime(progress.currentTime || 0);
-    }
 
-    fetchVideoData();
-  }, [animeSlug, episodeNumber, animeTitle]);
-
-  const fetchVideoData = async () => {
+  const fetchVideoData = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -77,7 +68,20 @@ export default function WatchPlayer({
     } finally {
       setLoading(false);
     }
-  };
+  }, [animeTitle, episodeNumber]);
+
+  useEffect(() => {
+    const savedProgress = localStorage.getItem(
+      `watch-progress-${animeSlug}-${episodeNumber}`,
+    );
+    if (savedProgress) {
+      const progress = JSON.parse(savedProgress);
+      setStartTime(progress.currentTime || 0);
+    }
+
+    fetchVideoData();
+  }, [animeSlug, episodeNumber, fetchVideoData]);
+
 
   const handleTimeUpdate = (currentTime: number, duration: number) => {
     if (Math.floor(currentTime) % 5 === 0 && duration > 0) {
@@ -171,13 +175,45 @@ export default function WatchPlayer({
   }
 
   return (
-    <StreamingPlayer
-      sources={videoData.sources}
-      subtitles={videoData.subtitles}
-      poster={thumbnail}
-      onTimeUpdate={handleTimeUpdate}
-      onEnded={handleVideoEnded}
-      startTime={startTime}
-    />
+
+    <div className={`relative transition-all duration-300 ${theaterMode ? "z-50" : ""}`}>
+      {/* Theater Mode Dimmer Overlay */}
+      {theaterMode && (
+        <div className="fixed inset-0 bg-black/95 z-40 animate-fadeIn" />
+      )}
+
+      {/* Theater Mode Action Bar */}
+      <div className="flex items-center justify-between px-4 py-2 bg-[#181818] border-b border-white/10 text-xs">
+        <span className="text-gray-400 font-medium hidden sm:inline">
+          {animeTitle} • Episode {episodeNumber}
+        </span>
+        <button
+          onClick={() => setTheaterMode(!theaterMode)}
+          className={`flex items-center gap-1.5 px-3 py-1 rounded transition font-bold ${
+            theaterMode
+              ? "bg-red-600 text-white z-50 shadow-lg"
+              : "bg-white/10 hover:bg-white/20 text-white border border-white/20"
+          }`}
+        >
+          <span>🎬</span>
+          <span>{theaterMode ? "Exit Theater Mode" : "Theater Mode"}</span>
+        </button>
+      </div>
+
+      <div className={`relative ${theaterMode ? "z-50 max-w-6xl mx-auto py-8" : ""}`}>
+        <StreamingPlayer
+          sources={videoData.sources}
+          subtitles={videoData.subtitles}
+          poster={thumbnail}
+          animeTitle={animeTitle}
+          episodeNumber={episodeNumber}
+          onTimeUpdate={handleTimeUpdate}
+          onEnded={handleVideoEnded}
+          startTime={startTime}
+        />
+
+      </div>
+    </div>
   );
 }
+

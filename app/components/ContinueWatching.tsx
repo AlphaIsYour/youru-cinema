@@ -16,9 +16,9 @@ export default function ContinueWatching() {
   if (items.length === 0) return null;
 
   return (
-    <div className="px-4 sm:px-6 lg:px-16 mb-12">
-      <h2 className="text-2xl font-bold mb-6 text-white">Continue Watching</h2>
-      <div className="flex space-x-3 overflow-x-auto pb-6 scrollbar-hide">
+    <div className="px-4 sm:px-8 md:px-12 lg:px-16 mb-8 sm:mb-12">
+      <h2 className="text-lg sm:text-2xl font-bold mb-4 sm:mb-6 text-white tracking-tight">Continue Watching</h2>
+      <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-4 sm:pb-6 scrollbar-hide">
         {items.map((item) => {
           const progress = (item.progress / item.duration) * 100;
 
@@ -26,8 +26,9 @@ export default function ContinueWatching() {
             <Link
               key={`${item.animeId}-${item.episodeNumber}`}
               href={`/watch/${item.animeId}-ep-${item.episodeNumber}`}
-              className="flex-shrink-0 w-80 group"
+              className="flex-shrink-0 w-56 sm:w-72 md:w-80 group"
             >
+
               <div className="relative aspect-video rounded-md overflow-hidden">
                 <Image
                   src={item.thumbnail}

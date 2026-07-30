@@ -5,13 +5,14 @@ import Link from "next/link";
 import WatchPlayer from "@/app/components/WatchPlayer";
 
 type WatchPageProps = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
-  searchParams: {
+  }>;
+  searchParams: Promise<{
     ep?: string;
-  };
+  }>;
 };
+
 
 export default async function WatchPage({
   params,
@@ -64,13 +65,13 @@ export default async function WatchPage({
         </div>
       </div>
 
-      <div className="max-w-[1920px] mx-auto px-16 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      <div className="max-w-[2560px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 py-6 sm:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
           <div className="lg:col-span-8">
-            <div className="mb-8">
+            <div className="mb-6 sm:mb-8">
               <Link
                 href={`/anime/${animeId}`}
-                className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors duration-200 mb-6 group"
+                className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors duration-200 mb-4 sm:mb-6 group text-xs sm:text-sm"
               >
                 <svg
                   className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1"
@@ -85,14 +86,15 @@ export default async function WatchPage({
                     d="M10 19l-7-7m0 0l7-7m-7 7h18"
                   />
                 </svg>
-                <span className="text-sm font-light">Back to series</span>
+                <span className="font-light">Back to series</span>
               </Link>
 
-              <h1 className="text-4xl font-black mb-2 text-white leading-tight">
+              <h1 className="text-2xl sm:text-4xl font-black mb-2 text-white leading-tight">
                 {anime.title}
               </h1>
-              <p className="text-lg text-gray-400 font-light">
+              <p className="text-sm sm:text-lg text-gray-400 font-light">
                 Episode {episodeNumber}
+
                 {totalEpisodes > 0 && (
                   <span className="text-gray-600"> of {totalEpisodes}</span>
                 )}

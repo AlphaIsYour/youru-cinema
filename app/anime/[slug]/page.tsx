@@ -6,10 +6,11 @@ import { notFound } from "next/navigation";
 import FavoriteButton from "@/app/components/FavoriteButton";
 
 type AnimeDetailPageProps = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
+
 
 export default async function AnimeDetailPage({
   params,
@@ -30,7 +31,7 @@ export default async function AnimeDetailPage({
 
   return (
     <div className="text-white bg-[#141414] min-h-screen">
-      <div className="relative w-full h-[80vh]">
+      <div className="relative w-full h-[65vh] sm:h-[75vh] lg:h-[80vh] max-w-[2560px] mx-auto overflow-hidden">
         <Image
           src={anime.images.webp.large_image_url}
           alt={anime.title}
@@ -41,38 +42,37 @@ export default async function AnimeDetailPage({
         <div className="absolute inset-0 bg-gradient-to-r from-[#141414] via-[#141414]/90 to-[#141414]/40"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-[#141414]/60 to-transparent"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(20,20,20,0.4)_100%)]"></div>
 
-        <div className="absolute bottom-0 left-0 right-0 px-16 pb-24">
+        <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-8 md:px-12 lg:px-16 pb-16 sm:pb-24">
           <div className="max-w-3xl">
-            <h1 className="text-6xl font-black mb-6 leading-tight tracking-tight">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black mb-4 sm:mb-6 leading-tight tracking-tight drop-shadow-md">
               {anime.title}
             </h1>
 
-            <div className="flex items-center gap-4 mb-8">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-6 sm:mb-8 text-xs sm:text-sm">
               {anime.score && (
-                <span className="text-green-400 font-bold text-lg">
+                <span className="text-green-400 font-bold text-sm sm:text-lg">
                   ★ {anime.score.toFixed(1)}
                 </span>
               )}
-              <span className="text-gray-300 font-light text-sm">
+              <span className="text-gray-300 font-light">
                 {anime.year}
               </span>
-              <span className="border border-gray-500 px-2 py-0.5 text-xs text-gray-400 font-medium">
+              <span className="border border-gray-500 px-2 py-0.5 text-xs text-gray-400 font-medium rounded-sm">
                 {anime.type}
               </span>
-              <span className="text-gray-300 font-light text-sm">
+              <span className="text-gray-300 font-light">
                 {anime.episodes} Episodes
               </span>
             </div>
 
-            <div className="flex gap-4 mb-8">
+            <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-8">
               <Link
                 href={`/watch/${fullSlug}?ep=1`}
-                className="inline-flex items-center gap-3 bg-white text-black px-8 py-3 rounded font-bold text-base hover:bg-white/90 transition-all duration-200"
+                className="inline-flex items-center gap-2 sm:gap-3 bg-white text-black px-6 sm:px-8 py-2.5 sm:py-3 rounded-md font-bold text-sm sm:text-base hover:bg-white/90 transition-all duration-200 shadow-lg hover:scale-105"
               >
                 <svg
-                  className="w-6 h-6"
+                  className="w-5 h-5 sm:w-6 sm:h-6"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -92,11 +92,12 @@ export default async function AnimeDetailPage({
         </div>
       </div>
 
-      <div className="px-16 py-16 -mt-16 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          <div className="lg:col-span-8 space-y-12">
+      <div className="px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-16 -mt-12 sm:-mt-16 relative z-10 max-w-[2560px] mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+          <div className="lg:col-span-8 space-y-8 sm:space-y-12">
             <div>
-              <h2 className="text-2xl font-bold mb-6 text-white">About</h2>
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-white">About</h2>
+
               <p className="text-gray-400 text-base leading-relaxed font-light">
                 {anime.synopsis || "No synopsis available."}
               </p>

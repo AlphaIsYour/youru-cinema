@@ -5,14 +5,16 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
+import ToastContainer from "./components/ToastContainer";
+
 const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "700", "900"],
 });
 
 export const metadata: Metadata = {
-  title: "Youru Cinema",
-  description: "Website nonton anime modern",
+  title: "Youru Cinema | Netflix-Style Anime Streaming",
+  description: "Website nonton anime modern dan sinema kelas dunia",
 };
 
 export default function RootLayout({
@@ -29,7 +31,9 @@ export default function RootLayout({
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <ToastContainer />
       </body>
     </html>
   );
 }
+

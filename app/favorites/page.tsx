@@ -13,6 +13,8 @@ import Image from "next/image";
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<FavoriteAnime[]>([]);
   const [isClient, setIsClient] = useState(false);
+  const [filterStatus, setFilterStatus] = useState<string>("All");
+  const [sortBy, setSortBy] = useState<"date" | "title">("date");
 
   useEffect(() => {
     setIsClient(true);
@@ -36,25 +38,66 @@ export default function FavoritesPage() {
     );
   }
 
+  const filteredFavorites = favorites
+
+    .filter(() => true)
+    .sort((a, b) => {
+      if (sortBy === "title") return a.title.localeCompare(b.title);
+      return b.addedAt - a.addedAt;
+    });
+
   return (
-    <div className="min-h-screen bg-[#141414] pt-24 pb-16">
-      <div className="max-w-[1920px] mx-auto px-16">
-        <div className="mb-12">
-          <h1 className="text-5xl font-black text-white mb-3 tracking-tight">
-            My List
-          </h1>
-          <p className="text-gray-400 font-light text-sm">
-            {favorites.length > 0
-              ? `${favorites.length} ${favorites.length === 1 ? "title" : "titles"} saved`
-              : "Your personal collection"}
-          </p>
+    <div className="min-h-screen bg-[#141414] pt-20 sm:pt-28 pb-16">
+      <div className="max-w-[2560px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16">
+        <div className="mb-8 sm:mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <h1 className="text-3xl sm:text-5xl font-black text-white mb-2 sm:mb-3 tracking-tight">
+              My List
+            </h1>
+            <p className="text-gray-400 font-light text-xs sm:text-sm">
+              {favorites.length > 0
+                ? `${favorites.length} ${favorites.length === 1 ? "title" : "titles"} saved`
+                : "Your personal collection"}
+            </p>
+          </div>
+
+          {/* Filter Status Tabs & Sort Options */}
+          {favorites.length > 0 && (
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-1 bg-[#1a1a1a] p-1 rounded-lg border border-white/10 text-xs font-medium">
+                {["All", "Watching", "Completed", "Plan to Watch"].map((st) => (
+                  <button
+                    key={st}
+                    onClick={() => setFilterStatus(st)}
+                    className={`px-3 py-1.5 rounded-md transition ${
+                      filterStatus === st
+                        ? "bg-red-600 text-white shadow"
+                        : "text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    {st}
+                  </button>
+                ))}
+              </div>
+
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as "date" | "title")}
+                className="bg-[#1a1a1a] text-white text-xs px-3 py-2 rounded-lg border border-white/10 focus:outline-none"
+              >
+                <option value="date">Recently Added</option>
+                <option value="title">Title (A-Z)</option>
+              </select>
+            </div>
+          )}
         </div>
 
+
         {favorites.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-32">
-            <div className="mb-8">
+          <div className="flex flex-col items-center justify-center py-24 sm:py-32">
+            <div className="mb-6 sm:mb-8">
               <svg
-                className="w-32 h-32 text-gray-800"
+                className="w-24 h-24 sm:w-32 sm:h-32 text-gray-800"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -67,24 +110,25 @@ export default function FavoritesPage() {
                 />
               </svg>
             </div>
-            <h2 className="text-3xl font-bold text-white mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 sm:mb-4">
               Your list is empty
             </h2>
-            <p className="text-gray-400 text-base font-light mb-8 max-w-md text-center">
+            <p className="text-gray-400 text-sm sm:text-base font-light mb-8 max-w-md text-center">
               Add anime to your list so you can easily find them later. Just tap
               the heart icon on any title.
             </p>
             <Link
               href="/"
-              className="px-8 py-3 bg-white text-black rounded font-bold hover:bg-white/90 transition-all duration-200 text-sm"
+              className="px-6 sm:px-8 py-2.5 sm:py-3 bg-white text-black rounded font-bold hover:bg-white/90 transition-all duration-200 text-xs sm:text-sm"
             >
               Browse Anime
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
-            {favorites.map((anime) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-6">
+            {filteredFavorites.map((anime) => (
               <div key={anime.mal_id} className="group relative">
+
                 <Link href={`/anime/${anime.mal_id}`} className="block">
                   <div className="relative aspect-[2/3] overflow-hidden rounded-sm mb-2">
                     <Image
